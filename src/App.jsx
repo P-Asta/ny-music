@@ -21,6 +21,9 @@ function App() {
   /** @type {React.MutableRefObject<HTMLInputElement>} */
   const progress = useRef()
   
+  /** @type {React.MutableRefObject<HTMLInputElement>} */
+  const volume = useRef()
+  
 
 
   useEffect(() => {
@@ -28,6 +31,7 @@ function App() {
       console.log(data)
       setMusics(eval(data))
     }));
+    volume.current.value = 100
     progress.current.value = 0
     audioContainer.current.currentTime = 0
   }, [])
@@ -87,7 +91,12 @@ function App() {
       </audio>
 
       <div id="music">
-        <img src={`https://github.com/5-23/ny-music/blob/main/music_info/${playing}/cover.png?raw=true`} /> {playing}
+        <div>
+          <img src={`https://github.com/5-23/ny-music/blob/main/music_info/${playing}/cover.png?raw=true`} /> {playing}
+        </div>
+        <div>
+          <input type="range" min="0" max="100" ref={volume} onChange={() => {audioContainer.current.volume = volume.current.value/100}}/>
+        </div>
       </div>
       <div id="musics">
         {musics.map((name, _) => {
@@ -104,7 +113,6 @@ function App() {
           <img className="rev-x" src="skip.svg" alt=">>" onClick={musicPrev}/>
           <img id="status-change" src={status=="play"? "pause.svg":"play.svg"} alt={status=="play"? "||":"|>"} onClick={() => setStatus(status=="play"?"pause":"play")}/>
           <img src="skip.svg" alt=">>" onClick={musicNext}/>
-        
         </div>
       </div>
     </main>;
