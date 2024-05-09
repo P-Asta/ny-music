@@ -13,9 +13,14 @@
   --black: #1e1e2e;
 }
 
-html {
-  background-color: rgba(0, 7, 68, 0);
+html,
+body {
+  background: transparent;
 }
+
+/* html {
+  background-color: rgba(0, 7, 68, 0);
+} */
 
 body {
   --padding: 20px;
@@ -129,4 +134,8 @@ main {
 
 .rev-y {
   transform: scaleY(-1)
+}
+
+::-webkit-scrollbar {
+  display: none;
 }
