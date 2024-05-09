@@ -22,7 +22,10 @@ function App() {
   const progress = useRef()
   
   useEffect(() => {
-    fetch("https://raw.githubusercontent.com/5-23/ny-music/main/music_info/list").then(res => res.text().then(data => {setMusics(eval(data))}));
+    fetch("https://raw.githubusercontent.com/5-23/ny-music/main/music_info/list").then(res => res.text().then(data => {
+      console.log(data)
+      setMusics(eval(data))
+    }));
     progress.current.value = 0
     audioContainer.current.currentTime = 0
   }, [])
