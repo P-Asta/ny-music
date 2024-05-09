@@ -46,6 +46,7 @@ function App() {
           audioContainer.current.currentTime = progress.current.value / 1000 * audioContainer.current.duration
           console.log("overPlay", overPlay, "currentTime", audioContainer.current.currentTime, "duration", audioContainer.current.duration, "progress", progress.current.value)
         }else {
+          if (audioContainer.current.paused) {return}
           let progressPercent = audioContainer.current.currentTime / audioContainer.current.duration * 1000;
           if (String(progressPercent) == "NaN") progressPercent = 0
           progress.current.value = progressPercent
