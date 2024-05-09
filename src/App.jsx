@@ -33,8 +33,9 @@ function App() {
     setInterval(async () => {
         let overPlay = progress.current.value - audioContainer.current.currentTime / audioContainer.current.duration * 1000;
         if (String(overPlay) == "NaN") overPlay = 0
-        if (await appWindow.isFocused() && (overPlay > 2 || overPlay < -1)) {
+        if (await appWindow.isFocused() && (overPlay > 4 || overPlay < -4)) {
           audioContainer.current.currentTime = progress.current.value / 1000 * audioContainer.current.duration
+          console.log("overPlay", overPlay, "currentTime", audioContainer.current.currentTime, "duration", audioContainer.current.duration, "progress", progress.current.value)
         }else {
           let progressPercent = audioContainer.current.currentTime / audioContainer.current.duration * 1000;
           if (String(progressPercent) == "NaN") progressPercent = 0
