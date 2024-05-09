@@ -1,8 +1,128 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-jp.min.css");
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+
+* {
+  font-family: "Pretendard JP", "Pretendard";
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  color: #fff;
+}
+
+:root {
+  --black: #1e1e2e;
+}
+
 html {
   background-color: rgba(0, 7, 68, 0);
-
-      /* background: transparent; */
 }
+
 body {
-  /* background-color: rgba(0, 7, 68, 0.533); */
+  --padding: 20px;
+  padding: var(--padding);
+}
+
+main {
+  display: flex;
+  gap: 40px;
+  width: 100%;
+}
+
+
+
+#musics {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-radius: 4px;
+  padding: 12px;
+  min-height: 0;
+  height: fit-content;
+  max-height: 80vh;
+  background-color: var(--black);
+}
+#music {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-size: 24px;
+  font-weight: 500;
+  margin-bottom: 80px;
+  > img {
+    width: 240px;
+  }
+}
+
+#bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  width: calc(100% - var(--padding) * 2);
+  padding: 8px;
+  bottom: 8px;
+  border-radius: 4px;
+  background-color: var(--black);
+  > input {
+    width: 100%;
+  }
+  > div {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+  
+    > img {
+      width: 16px;
+      &:nth-child(2){
+        width: 24px;
+      }
+
+
+      transition: all .1s;
+      &:active {
+        transform: scale(0.92);
+        &.rev-x {
+          transform: scale(0.92) scaleX(-1);  
+        }
+      }
+    }
+  }
+}
+
+
+
+#status-change {
+  /* transform: all .3s;
+  &:active {
+    transform: scale(0.92);
+  } */
+}
+
+.music {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all .5s;
+  &:hover{
+    transform: scale(1.02);
+  }
+
+  > img {
+    width: 44px;
+    border-radius: 2px;
+  }
+}
+
+
+.rev-x {
+  transform: scaleX(-1)
+}
+
+.rev-y {
+  transform: scaleY(-1)
 }
