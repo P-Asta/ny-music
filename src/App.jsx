@@ -4,6 +4,8 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { appWindow } from "@tauri-apps/api/window";
 import "./App.css";
 import Music from "./components/Music"
+let PLAYING = "Cloudless"
+
 
 function App() {
   const [greetMsg, setGreetMsg] = useState("");
@@ -21,25 +23,37 @@ function App() {
   
   useEffect(() => {
     fetch("https://raw.githubusercontent.com/5-23/ny-music/main/music_info/list").then(res => res.text().then(data => {setMusics(eval(data))}));
-    setInterval(async () => {
-      if (!audioContainer.current.paused) {
-        if (await appWindow.isFocused() && (progress.current.value - audioContainer.current.currentTime / audioContainer.current.duration * 1000 > 2 || progress.current.value - audioContainer.current.currentTime / audioContainer.current.duration * 1000 < -1)) {
-          console.log(progress.current.value - audioContainer.current.currentTime / audioContainer.current.duration * 1000)
-          audioContainer.current.currentTime = progress.current.value / 1000 * audioContainer.current.duration
-        }
-        progress.current.value = audioContainer.current.currentTime / audioContainer.current.duration * 1000
-      }
-      
-    }, 10)
+    progress.current.value = 0
+    audioContainer.current.currentTime = 0
   }, [])
 
 
   useEffect(() => {
+    if (musics.length == 0) return
+    setInterval(async () => {
+        let overPlay = progress.current.value - audioContainer.current.currentTime / audioContainer.current.duration * 1000;
+        if (String(overPlay) == "NaN") overPlay = 0
+        if (await appWindow.isFocused() && (overPlay > 2 || overPlay < -1)) {
+          audioContainer.current.currentTime = progress.current.value / 1000 * audioContainer.current.duration
+        }else {
+          let progressPercent = audioContainer.current.currentTime / audioContainer.current.duration * 1000;
+          if (String(progressPercent) == "NaN") progressPercent = 0
+          progress.current.value = progressPercent
+          if (progressPercent == 1000) {
+            musicNext()
+            progress.current.value = 0
+            audioContainer.current.currentTime = 0
+          }
+        }
+    }, 100)
+  }, [musics])
+
+  useEffect(() => {
     if (status == "play") {
       if (audioSource.current.src != `https://fback.imnyang.xyz//NY64_Cover/Cover/${playing}.mp3`) {
+        progress.current.value = 0
         audioSource.current.src = `https://fback.imnyang.xyz//NY64_Cover/Cover/${playing}.mp3`
         audioContainer.current.load()
-        progress.current.value = 0
       }
       audioContainer.current.play()
     } else {
@@ -47,6 +61,16 @@ function App() {
     }
   }, [playing, status])
 
+
+  function musicNext() {
+    PLAYING = musics[(musics.indexOf(PLAYING) + 1) % musics.length]
+    setPlaying(PLAYING)
+  }
+
+  function musicPrev() {
+    PLAYING = musics[(musics.indexOf(PLAYING) - 1 + musics.length) % musics.length]
+    setPlaying(PLAYING)
+  }
 
   return <main>
       <audio id="audioContainer" ref={audioContainer}>
@@ -59,19 +83,19 @@ function App() {
       </div>
       <div id="musics">
         {musics.map((name, _) => {
-          return <Music name={name} setPlaying={setPlaying}/>
+          return <Music name={name} onClick={(name) => {
+            setPlaying(name)
+            PLAYING = name
+          }}/>
         })}
       </div>
       <div id="bar">
-        <input type="range" min="0" max="1000" ref={progress} />
+        <input type="range" min="0" max="1000" ref={progress}/>
         <div>
 
-          <img className="rev-x" src="skip.svg" alt="<<"/>
-          {
-            
-          }
+          <img className="rev-x" src="skip.svg" alt=">>" onClick={musicPrev}/>
           <img id="status-change" src={status=="play"? "pause.svg":"play.svg"} alt={status=="play"? "||":"|>"} onClick={() => setStatus(status=="play"?"pause":"play")}/>
-          <img src="skip.svg" alt=">>"/>
+          <img src="skip.svg" alt=">>" onClick={musicNext}/>
         
         </div>
       </div>

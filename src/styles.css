@@ -85,9 +85,10 @@ main {
       transition: all .1s;
       &:active {
         transform: scale(0.92);
-        &.rev-x {
-          transform: scale(0.92) scaleX(-1);  
-        }
+      }
+      &.rev-x:active {
+        
+        transform: scaleX(-0.92) scaleY(0.92);  
       }
     }
   }
