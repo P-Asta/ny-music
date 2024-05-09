@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/tauri";
+import { invoke } from '@tauri-apps/api/tauri'
 import { appWindow } from "@tauri-apps/api/window";
 import "./App.css";
 import Music from "./components/Music"
@@ -21,6 +21,8 @@ function App() {
   /** @type {React.MutableRefObject<HTMLInputElement>} */
   const progress = useRef()
   
+
+
   useEffect(() => {
     fetch("https://raw.githubusercontent.com/5-23/ny-music/main/music_info/list").then(res => res.text().then(data => {
       console.log(data)
@@ -60,8 +62,10 @@ function App() {
         audioContainer.current.load()
       }
       audioContainer.current.play()
+      invoke('discord_status', {name: playing})
     } else {
       audioContainer.current.pause()
+      invoke('discord_status', {name: ""})
     }
   }, [playing, status])
 
