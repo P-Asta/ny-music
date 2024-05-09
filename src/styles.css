@@ -41,6 +41,7 @@ main {
   height: fit-content;
   max-height: 80vh;
   background-color: var(--black);
+  overflow: scroll;
 }
 #music {
   display: flex;
