@@ -1,7 +1,6 @@
-# Tauri + React
+# NY-Music
+[@ny64](https://github.com/ny0510) rvc모델의 음악을 들을수있는 프로그램 입니다.
 
-This template should help get you started developing with Tauri and React in Vite.
-
-## Recommended IDE Setup
-
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+## special thx
+[@ny64](https://github.com/ny0510)
+[@imnyang](https://github.com/imnyang)
