@@ -38,7 +38,7 @@ fn main() {
             apply_vibrancy(&window, NSVisualEffectMaterial::HudWindow, None, None)
                 .expect("Unsupported platform! 'apply_vibrancy' is only supported on macOS");
 
-            #[cfg(target_os = "window")]
+            #[cfg(target_os = "windows")]
             apply_acrylic(&window, Some((18, 18, 18, 125)))
                 .expect("Unsupported platform! 'apply_blur' is only supported on Windows");
 
@@ -82,7 +82,7 @@ fn discord_status(name: String) {
 }
 
 #[tauri::command]
-#[cfg(target_os = "window")]
+#[cfg(target_os = "windows")]
 fn discord_status(name: String) {}
 
 #[cfg(not(target_os = "windows"))]
