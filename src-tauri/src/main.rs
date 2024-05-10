@@ -26,7 +26,7 @@ lazy_static! {
 fn main() {
     {
         let mut client = D_CLIENT.lock().unwrap();
-        client.connect().unwrap();
+        client.connect().unwrap_or(());
     }
 
     tauri::Builder::default()
@@ -38,7 +38,7 @@ fn main() {
             apply_vibrancy(&window, NSVisualEffectMaterial::HudWindow, None, None)
                 .expect("Unsupported platform! 'apply_vibrancy' is only supported on macOS");
 
-            #[cfg(target_os = "windows")]
+            #[cfg(target_os = "window")]
             apply_acrylic(&window, Some((18, 18, 18, 125)))
                 .expect("Unsupported platform! 'apply_blur' is only supported on Windows");
 
@@ -49,10 +49,18 @@ fn main() {
 }
 
 #[tauri::command]
-#[cfg(target_os = "macos")]
+#[cfg(not(target_os = "windows"))]
 fn discord_status(name: String) {
+    if !is_process_running("Discord") {
+        return;
+    }
+
     {
-        let mut client = D_CLIENT.lock().unwrap();
+        let client = D_CLIENT.lock();
+        if client.is_err() {
+            return;
+        }
+        let mut client = client.unwrap();
         if name == "" {
             client.clear_activity().unwrap_or(());
         } else {
@@ -74,10 +82,10 @@ fn discord_status(name: String) {
 }
 
 #[tauri::command]
-#[cfg(not(target_os = "macos"))]
+#[cfg(target_os = "window")]
 fn discord_status(name: String) {}
 
-#[cfg(target_os = "macos")]
+#[cfg(not(target_os = "windows"))]
 fn is_process_running(process_name: &str) -> bool {
     let output = Command::new("ps")
         .arg("aux")
