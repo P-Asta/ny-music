@@ -27,10 +27,16 @@ function App() {
 
 
   useEffect(() => {
-    fetch("https://raw.githubusercontent.com/5-23/ny-music/main/music_info/list").then(res => res.text().then(data => {
+    fetch("https://fback.imnyang.xyz//NY64_Cover/list").then(res => res.text().then(data => {
       console.log(data)
       setMusics(eval(data))
     }));
+    setInterval(() => {
+      fetch("https://fback.imnyang.xyz//NY64_Cover/list").then(res => res.text().then(data => {
+        console.log(data)
+        setMusics(eval(data))
+      }));
+    }, 10000)
     volume.current.value = 100
     progress.current.value = 0
     audioContainer.current.currentTime = 0
@@ -60,6 +66,7 @@ function App() {
   }, [musics])
 
   useEffect(() => {
+    console.log("playing", playing)
     if (status == "play") {
       if (audioSource.current.src != `https://fback.imnyang.xyz//NY64_Cover/Cover/${playing}.mp3`) {
         progress.current.value = 0
@@ -93,7 +100,7 @@ function App() {
 
       <div id="music">
         <div>
-          <img src={`https://github.com/5-23/ny-music/blob/main/music_info/${playing}/cover.png?raw=true`} /> {playing}
+          <img src={`https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg`} /> {playing}
         </div>
         <div>
           <input type="range" min="0" max="100" ref={volume} onChange={() => {audioContainer.current.volume = volume.current.value/100}}/>

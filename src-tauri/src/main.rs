@@ -53,7 +53,7 @@ fn discord_status(name: String) {
     {
         let mut client = D_CLIENT.lock().unwrap();
         if name == "" {
-            client.clear_activity().unwrap();
+            client.clear_activity().unwrap_or(());
         } else {
             let start = SystemTime::now();
             let since_the_epoch = start
@@ -67,7 +67,7 @@ fn discord_status(name: String) {
                         .assets(Assets::new().large_image("hedgehog"))
                         .details(&format!("Listening to {name:?}")),
                 )
-                .unwrap();
+                .unwrap_or(());
         }
     }
 }
