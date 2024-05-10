@@ -11,26 +11,26 @@ edition = "2021"
 tauri-build = { version = "1", features = [] }
 
 [dependencies]
-tauri = { version = "1", features = [ "macos-private-api", "shell-open"] }
+tauri = { version = "1", features = ["macos-private-api", "shell-open"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 window-vibrancy = "0.4.0"
-discord-rich-presence = "0.2.3"
 lazy_static = "1.4.0"
+discord-rich-presence = "0.2.3"
 
 
 [target."cfg(target_os = \"windows\")".dependencies]
 windows-version = "0.1"
 
-  [target."cfg(target_os = \"windows\")".dependencies.windows-sys]
-  version = "0.52.0"
-  features = [
+[target."cfg(target_os = \"windows\")".dependencies.windows-sys]
+version = "0.52.0"
+features = [
   "Win32_Foundation",
   "Win32_System_LibraryLoader",
   "Win32_System_SystemInformation",
   "Win32_Graphics_Gdi",
   "Win32_Graphics_Dwm",
-  "Win32_UI_WindowsAndMessaging"
+  "Win32_UI_WindowsAndMessaging",
 ]
 
 [target."cfg(target_os = \"macos\")".dependencies]

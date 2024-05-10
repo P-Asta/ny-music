@@ -5,14 +5,14 @@
     windows_subsystem = "windows"
 )]
 
-use std::{
-    sync::Mutex,
-    time::{SystemTime, UNIX_EPOCH},
-};
-
 use discord_rich_presence::{
     activity::{self, Assets, Timestamps},
     DiscordIpc, DiscordIpcClient,
+};
+use std::{
+    process::Command,
+    sync::Mutex,
+    time::{SystemTime, UNIX_EPOCH},
 };
 use tauri::Manager;
 use window_vibrancy::*;
@@ -49,6 +49,7 @@ fn main() {
 }
 
 #[tauri::command]
+#[cfg(target_os = "macos")]
 fn discord_status(name: String) {
     {
         let mut client = D_CLIENT.lock().unwrap();
@@ -70,4 +71,26 @@ fn discord_status(name: String) {
                 .unwrap_or(());
         }
     }
+}
+
+#[tauri::command]
+#[cfg(not(target_os = "macos"))]
+fn discord_status(name: String) {}
+
+#[cfg(target_os = "macos")]
+fn is_process_running(process_name: &str) -> bool {
+    let output = Command::new("ps")
+        .arg("aux")
+        .output()
+        .expect("Failed to execute command");
+
+    let output_str = String::from_utf8_lossy(&output.stdout);
+
+    // ps 명령어 결과에서 프로세스 이름이 있는지 확인
+    output_str.contains(process_name)
+}
+
+#[cfg(not(target_os = "macos"))]
+fn is_process_running(process_name: &str) -> bool {
+    return true;
 }
