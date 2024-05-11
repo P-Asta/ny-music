@@ -104,7 +104,7 @@ function App() {
 
       <div id="music">
         <div>
-          <img src={`https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg?${Date.now()}`} /> {playing}
+          <img src={`https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg`} /> {playing}
         </div>
         <div>
           <input type="range" min="0" max="100" ref={volume} onChange={() => {audioContainer.current.volume = volume.current.value/100}}/>
