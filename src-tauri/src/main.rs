@@ -96,18 +96,5 @@ fn is_process_running(process_name: &str) -> bool {
 
 #[cfg(target_os = "windows")]
 fn is_process_running(process_name: &str) -> bool {
-    let output = Command::new("tasklist").output();
-    if output.is_ok() {
-        let output = output.unwrap();
-        let output_str = String::from_utf8_lossy(&output.stdout);
-        return output_str.contains(process_name);
-    } else {
-        let output = Command::new("Get-Process").output();
-        if output.is_ok() {
-            let output = output.unwrap();
-            let output_str = String::from_utf8_lossy(&output.stdout);
-            return output_str.contains(process_name);
-        }
-        return false;
-    }
+    false
 }
