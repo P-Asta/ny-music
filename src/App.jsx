@@ -56,7 +56,8 @@ function App() {
           let progressPercent = audioContainer.current.currentTime / audioContainer.current.duration * 1000;
           if (String(progressPercent) == "NaN") progressPercent = 0
           progress.current.value = progressPercent
-          if (progressPercent >= 999) {
+          console.log(progressPercent)
+          if (progressPercent >= 995) {
             musicNext()
             progress.current.value = 0
             audioContainer.current.currentTime = 0
