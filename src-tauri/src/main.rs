@@ -33,7 +33,11 @@ fn main() {
         .invoke_handler(tauri::generate_handler![discord_status])
         .setup(|app| {
             let window = app.get_window("main").unwrap();
-
+            #[cfg(target_os = "windows")]
+            {
+                window.open_devtools();
+                window.close_devtools();
+            }
             #[cfg(target_os = "macos")]
             apply_vibrancy(&window, NSVisualEffectMaterial::HudWindow, None, None)
                 .expect("Unsupported platform! 'apply_vibrancy' is only supported on macOS");
