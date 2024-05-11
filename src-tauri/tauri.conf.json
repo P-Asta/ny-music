@@ -7,7 +7,7 @@
   },
   "package": {
     "productName": "ny-music",
-    "version": "1.1.0" 
+    "version": "1.1.1" 
   },
   "tauri": {
     "allowlist": {
@@ -22,6 +22,7 @@
         "title": "ny-music",
         "width": 800,
         "height": 600,
+        "decorations": false,
         "transparent": true
       }
     ],
