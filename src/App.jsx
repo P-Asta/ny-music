@@ -69,8 +69,8 @@ function App() {
 
   useEffect(() => {
     if (status == "play") {
-      if (decodeURI(audioSource.current.src) != `https://fback.imnyang.xyz//NY64_Cover/Cover/${playing}.mp3`) {
-        audioSource.current.src = `https://fback.imnyang.xyz//NY64_Cover/Cover/${playing}.mp3`
+      if (!decodeURI(audioSource.current.src).startsWith(`https://fback.imnyang.xyz//NY64_Cover/Cover/${playing}.mp3`)) {
+        audioSource.current.src = `https://fback.imnyang.xyz//NY64_Cover/Cover/${playing}.mp3?${Date.now()}`
         audioContainer.current.load()
 
         progress.current.value = 0
