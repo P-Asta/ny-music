@@ -5,7 +5,7 @@ import { appWindow } from "@tauri-apps/api/window";
 import "./App.css";
 import Music from "./components/Music"
 let PLAYING = "Cloudless"
-
+let START = 0;
 
 function App() {
   const [greetMsg, setGreetMsg] = useState("");
@@ -27,13 +27,13 @@ function App() {
 
 
   useEffect(() => {
+    if (START == 1) return
+    START = 1
     fetch("https://fback.imnyang.xyz//NY64_Cover/list").then(res => res.text().then(data => {
-      console.log(data)
       setMusics(eval(data))
     }));
     setInterval(() => {
       fetch("https://fback.imnyang.xyz//NY64_Cover/list").then(res => res.text().then(data => {
-        console.log(data)
         setMusics(eval(data))
       }));
     }, 10000)
@@ -48,15 +48,16 @@ function App() {
     setInterval(async () => {
         let overPlay = progress.current.value - audioContainer.current.currentTime / audioContainer.current.duration * 1000;
         if (String(overPlay) == "NaN") overPlay = 0
-        if (await appWindow.isFocused() && (overPlay > 4 || overPlay < -4)) {
+        if (await appWindow.isFocused() && (overPlay > 7 || overPlay < -7)) {
           audioContainer.current.currentTime = progress.current.value / 1000 * audioContainer.current.duration
-          console.log("overPlay", overPlay, "currentTime", audioContainer.current.currentTime, "duration", audioContainer.current.duration, "progress", progress.current.value)
         }else {
-          if (audioContainer.current.paused) {return}
+          if (audioContainer.current.paused || String(audioContainer.current.duration) == "NaN") {return}
+
           let progressPercent = audioContainer.current.currentTime / audioContainer.current.duration * 1000;
-          if (String(progressPercent) == "NaN") progressPercent = 0
+          if (String(progressPercent) == "NaN") { 
+            progressPercent = 0
+          }
           progress.current.value = progressPercent
-          console.log(progressPercent)
           if (progressPercent >= 995) {
             musicNext()
             progress.current.value = 0
@@ -67,12 +68,13 @@ function App() {
   }, [musics])
 
   useEffect(() => {
-    console.log("playing", playing)
     if (status == "play") {
-      if (audioSource.current.src != `https://fback.imnyang.xyz//NY64_Cover/Cover/${playing}.mp3`) {
-        progress.current.value = 0
+      if (decodeURI(audioSource.current.src) != `https://fback.imnyang.xyz//NY64_Cover/Cover/${playing}.mp3`) {
         audioSource.current.src = `https://fback.imnyang.xyz//NY64_Cover/Cover/${playing}.mp3`
         audioContainer.current.load()
+
+        progress.current.value = 0
+        audioContainer.current.currentTime = 0
       }
       audioContainer.current.play()
       invoke('discord_status', {name: playing})
@@ -80,6 +82,7 @@ function App() {
       audioContainer.current.pause()
       invoke('discord_status', {name: ""})
     }
+
   }, [playing, status])
 
 
