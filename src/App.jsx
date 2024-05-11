@@ -29,11 +29,11 @@ function App() {
   useEffect(() => {
     if (START == 1) return
     START = 1
-    fetch("https://fback.imnyang.xyz//NY64_Cover/list").then(res => res.text().then(data => {
+    fetch(`https://fback.imnyang.xyz//NY64_Cover/list?${Date.now()}`).then(res => res.text().then(data => {
       setMusics(eval(data))
     }));
     setInterval(() => {
-      fetch("https://fback.imnyang.xyz//NY64_Cover/list").then(res => res.text().then(data => {
+      fetch(`https://fback.imnyang.xyz//NY64_Cover/list?${Date.now()}`).then(res => res.text().then(data => {
         setMusics(eval(data))
       }));
     }, 10000)
@@ -104,7 +104,7 @@ function App() {
 
       <div id="music">
         <div>
-          <img src={`https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg`} /> {playing}
+          <img src={`https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg?${Date.now()}`} /> {playing}
         </div>
         <div>
           <input type="range" min="0" max="100" ref={volume} onChange={() => {audioContainer.current.volume = volume.current.value/100}}/>
