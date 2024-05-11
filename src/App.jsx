@@ -70,7 +70,35 @@ function App() {
   useEffect(() => {
     if (status == "play") {
       if (!decodeURI(audioSource.current.src).startsWith(`https://fback.imnyang.xyz//NY64_Cover/Cover/${playing}.mp3`)) {
-        audioSource.current.src = `https://fback.imnyang.xyz//NY64_Cover/Cover/${playing}.mp3?${Date.now()}`
+        let date = Date.now();
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: playing,
+          album: "NY Music",
+          artwork: [
+            { src: `https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg?${date}`, sizes: '96x96', type: 'image/png' },
+            { src: `https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg?${date}`, sizes: '128x128', type: 'image/png' },
+            { src: `https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg?${date}`, sizes: '192x192', type: 'image/png' },
+            { src: `https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg?${date}`, sizes: '256x256', type: 'image/png' },
+            { src: `https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg?${date}`, sizes: '384x384', type: 'image/png' },
+            { src: `https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg?${date}`, sizes: '512x512', type: 'image/png' },
+          ]
+        });
+        navigator.mediaSession.setActionHandler(
+          'nexttrack',
+          musicNext
+        );
+        navigator.mediaSession.setActionHandler(
+          'previoustrack',
+          musicPrev
+        );
+        navigator.mediaSession.setActionHandler("seekto", (e) => {
+          progress.current.value = e.seekTime*10
+          audioContainer.current.currentTime = e.seekTime
+        });
+      
+
+      
+        audioSource.current.src = `https://fback.imnyang.xyz//NY64_Cover/Cover/${playing}.mp3?${date}`
         audioContainer.current.load()
 
         progress.current.value = 0
@@ -97,8 +125,10 @@ function App() {
   }
 
   return <main>
+    {/* <title>{playing}</title> */}
       <audio id="audioContainer" ref={audioContainer}>
         <source id="audioSource" src="" ref={audioSource}/>
+        <source src="https://fback.imnyang.xyz//NY64_Cover/Cover/Bad Apple.mp3"/>
         Your browser does not support the audio format.
       </audio>
 
