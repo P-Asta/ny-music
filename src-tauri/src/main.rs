@@ -49,7 +49,7 @@ fn main() {
 }
 
 #[tauri::command]
-#[cfg(not(target_os = "windows"))]
+// #[cfg(not(target_os = "windows"))]
 fn discord_status(name: String) {
     if !is_process_running("Discord") {
         return;
@@ -81,10 +81,6 @@ fn discord_status(name: String) {
     }
 }
 
-#[tauri::command]
-#[cfg(target_os = "windows")]
-fn discord_status(name: String) {}
-
 #[cfg(not(target_os = "windows"))]
 fn is_process_running(process_name: &str) -> bool {
     let output = Command::new("ps")
@@ -98,7 +94,20 @@ fn is_process_running(process_name: &str) -> bool {
     output_str.contains(process_name)
 }
 
-#[cfg(not(target_os = "macos"))]
+#[cfg(target_os = "windows")]
 fn is_process_running(process_name: &str) -> bool {
-    return true;
+    let output = Command::new("tasklist").output();
+    if output.is_ok() {
+        let output = output.unwrap();
+        let output_str = String::from_utf8_lossy(&output.stdout);
+        return output_str.contains(process_name);
+    } else {
+        let output = Command::new("Get-Process").output();
+        if output.is_ok() {
+            let output = output.unwrap();
+            let output_str = String::from_utf8_lossy(&output.stdout);
+            return output_str.contains(process_name);
+        }
+        return false;
+    }
 }
