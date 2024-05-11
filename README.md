@@ -9,6 +9,11 @@
 sudo spctl --master-disable
 xattr -cr 설치한dmg파일경로
 ```
+## mobile 앱
+- 오픈소스: https://github.com/imnyang/mobile-ny-music
+- 설치링크: https://music.ny64.kr/
+<img src="https://github.com/5-23/ny-music/assets/86705803/64fc624f-b4fc-4f0a-a5b1-f58cb95c5688" width="400"/>
+
 
 ## special thx
 [@ny64](https://github.com/ny0510)
