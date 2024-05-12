@@ -66,7 +66,10 @@ fn discord_status(name: String) {
         }
         let mut client = client.unwrap();
         if name == "" {
-            client.clear_activity().unwrap_or(());
+            client.clear_activity().unwrap_or_else(|_| {
+                client.connect().unwrap_or(());
+                client.clear_activity().unwrap_or(())
+            });
         } else {
             let start = SystemTime::now();
             let since_the_epoch = start
@@ -80,7 +83,17 @@ fn discord_status(name: String) {
                         .assets(Assets::new().large_image("hedgehog"))
                         .details(&format!("Listening to {name:?}")),
                 )
-                .unwrap_or(());
+                .unwrap_or_else(|_| {
+                    client.connect().unwrap_or(());
+                    client
+                        .set_activity(
+                            activity::Activity::new()
+                                .timestamps(Timestamps::new().start(since_the_epoch as i64))
+                                .assets(Assets::new().large_image("hedgehog"))
+                                .details(&format!("Listening to {name:?}")),
+                        )
+                        .unwrap_or(())
+                });
         }
     }
 }

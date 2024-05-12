@@ -69,6 +69,7 @@ function App() {
 
   useEffect(() => {
     if (status == "play") {
+      audioContainer.current.play()
       if (!decodeURI(audioSource.current.src).startsWith(`https://fback.imnyang.xyz//NY64_Cover/Cover/${playing}.mp3`)) {
         let date = Date.now();
         navigator.mediaSession.metadata = new MediaMetadata({
@@ -125,7 +126,6 @@ function App() {
   }
 
   return <main>
-    {/* <title>{playing}</title> */}
       <audio id="audioContainer" ref={audioContainer}>
         <source id="audioSource" src="" ref={audioSource}/>
         <source src="https://fback.imnyang.xyz//NY64_Cover/Cover/Bad Apple.mp3"/>
