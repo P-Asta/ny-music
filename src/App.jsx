@@ -48,6 +48,7 @@ function App() {
     setInterval(async () => {
         let overPlay = progress.current.value - audioContainer.current.currentTime / audioContainer.current.duration * 1000;
         if (String(overPlay) == "NaN") overPlay = 0
+
         if (await appWindow.isFocused() && (overPlay > 7 || overPlay < -7)) {
           audioContainer.current.currentTime = progress.current.value / 1000 * audioContainer.current.duration
         }else {
@@ -116,11 +117,15 @@ function App() {
 
 
   function musicNext() {
+    audioContainer.current.currentTime = 0
+    progress.current.value = 0
     PLAYING = musics[(musics.indexOf(PLAYING) + 1) % musics.length]
     setPlaying(PLAYING)
   }
 
   function musicPrev() {
+    audioContainer.current.currentTime = 0
+    progress.current.value = 0
     PLAYING = musics[(musics.indexOf(PLAYING) - 1 + musics.length) % musics.length]
     setPlaying(PLAYING)
   }
@@ -143,13 +148,36 @@ function App() {
       <div id="musics">
         {musics.map((name, _) => {
           return <Music name={name} onClick={(name) => {
+            audioContainer.current.currentTime = 0
+            progress.current.value = 0
             setPlaying(name)
             PLAYING = name
           }}/>
         })}
       </div>
       <div id="bar">
-        <input type="range" min="0" max="1000" ref={progress}/>
+        <input type="range" min="0" max="1000" ref={progress} onChange={() => {
+          if (!decodeURI(audioSource.current.src).startsWith(`https://fback.imnyang.xyz//NY64_Cover/Cover/${playing}.mp3`)) {
+            let date = Date.now();
+            navigator.mediaSession.metadata = new MediaMetadata({
+              title: playing,
+              album: "NY Music",
+              artwork: [
+                { src: `https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg?${date}`, sizes: '96x96', type: 'image/png' },
+                { src: `https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg?${date}`, sizes: '128x128', type: 'image/png' },
+                { src: `https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg?${date}`, sizes: '192x192', type: 'image/png' },
+                { src: `https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg?${date}`, sizes: '256x256', type: 'image/png' },
+                { src: `https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg?${date}`, sizes: '384x384', type: 'image/png' },
+                { src: `https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg?${date}`, sizes: '512x512', type: 'image/png' },
+              ]
+            });
+          
+    
+          
+            audioSource.current.src = `https://fback.imnyang.xyz//NY64_Cover/Cover/${playing}.mp3?${date}`
+            audioContainer.current.load()
+          }
+        }}/>
         <div>
 
           <img className="rev-x" src="skip.svg" alt=">>" onClick={musicPrev}/>
