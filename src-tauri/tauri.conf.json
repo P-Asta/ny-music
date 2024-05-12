@@ -5,10 +5,9 @@
     "devPath": "http://localhost:1420",
     "distDir": "../dist"
   },
-  
   "package": {
     "productName": "ny-music",
-    "version": "1.2.0" 
+    "version": "1.2.1" 
   },
   "tauri": {
     "allowlist": {
