@@ -56,7 +56,7 @@ function App() {
         let overPlay = progress.current.value - audioContainer.current.currentTime / audioContainer.current.duration * 1000;
         if (String(overPlay) == "NaN") overPlay = 0
 
-        if (await appWindow.isFocused() && (overPlay > 7 || overPlay < -7)) {
+        if (await appWindow.isFocused() && (overPlay > 10 || overPlay < -10)) {
           audioContainer.current.currentTime = progress.current.value / 1000 * audioContainer.current.duration
         }else {
           if (audioContainer.current.paused || String(audioContainer.current.duration) == "NaN") {return}
@@ -66,7 +66,7 @@ function App() {
             progressPercent = 0
           }
           progress.current.value = progressPercent
-          if (progressPercent >= 995) {
+          if (progressPercent >= 990) {
             console.log(MODE)
             if (MODE == "normal") musicNext()
             if (MODE == "shuffle") {

@@ -72,7 +72,7 @@ b {
   padding: 12px;
   min-height: 0;
   height: fit-content;
-  max-height: 80vh;
+  height: 80vh;
   background-color: var(--black);
   overflow: scroll;
 }
