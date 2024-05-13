@@ -1,5 +1,8 @@
 export default function Music({name, onClick, q}) {
-    let wrappedName = name.replace(new RegExp(q, 'gi'), match => `<b>${match}</b>`);
+    
+    let pattern = q.split('').join('\\s*');
+    let regex = new RegExp(pattern, 'gi');
+    let wrappedName = name.replace(regex, match => `<b>${match}</b>`);
     if (q == "") {
         wrappedName = name;
     }
