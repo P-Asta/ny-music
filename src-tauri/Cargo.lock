@@ -1691,7 +1691,7 @@ dependencies = [
 
 [[package]]
 name = "ny-music"
-version = "0.0.0"
+version = "1.3.0"
 dependencies = [
  "cocoa 0.25.0",
  "discord-rich-presence",
