@@ -23,6 +23,9 @@ function App() {
   
   /** @type {React.MutableRefObject<HTMLInputElement>} */
   const volume = useRef()
+
+  /** @type {React.MutableRefObject<HTMLInputElement>} */
+  const searchQuery = useRef()
   
 
 
@@ -145,15 +148,25 @@ function App() {
           <input type="range" min="0" max="100" ref={volume} onChange={() => {audioContainer.current.volume = volume.current.value/100}}/>
         </div>
       </div>
-      <div id="musics">
-        {musics.map((name, _) => {
-          return <Music name={name} onClick={(name) => {
-            audioContainer.current.currentTime = 0
-            progress.current.value = 0
-            setPlaying(name)
-            PLAYING = name
-          }}/>
-        })}
+      <div id="greet">
+        <input type="text" id="search" placeholder="search..." ref={searchQuery} onInput={() => setMusics([...musics])}/>
+        <div id="musics">
+          {musics.map((name, i) => {
+            let q = searchQuery.current.value.replace(/ /gim, "").toLowerCase();
+            
+            /** @type {String} */
+            let test_name = name.replace(/ /gim, "").toLowerCase();
+            if (test_name.includes(q)) {
+              return <Music key={i} name={name} q={q} onClick={(name) => {
+                audioContainer.current.currentTime = 0
+                progress.current.value = 0
+                setPlaying(name)
+                PLAYING = name
+              }}/>
+            }
+            return null
+          })}
+        </div>
       </div>
       <div id="bar">
         <input type="range" min="0" max="1000" ref={progress} onChange={() => {
@@ -171,9 +184,6 @@ function App() {
                 { src: `https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg?${date}`, sizes: '512x512', type: 'image/png' },
               ]
             });
-          
-    
-          
             audioSource.current.src = `https://fback.imnyang.xyz//NY64_Cover/Cover/${playing}.mp3?${date}`
             audioContainer.current.load()
           }

@@ -12,6 +12,7 @@ use discord_rich_presence::{
 use std::{
     process::Command,
     sync::Mutex,
+    thread,
     time::{SystemTime, UNIX_EPOCH},
 };
 use tauri::Manager;
@@ -25,8 +26,10 @@ lazy_static! {
 
 fn main() {
     {
-        let mut client = D_CLIENT.lock().unwrap();
-        client.connect().unwrap_or(());
+        thread::spawn(|| {
+            let mut client = D_CLIENT.lock().unwrap();
+            client.connect().unwrap_or(());
+        });
     }
 
     tauri::Builder::default()
@@ -55,47 +58,49 @@ fn main() {
 #[tauri::command]
 // #[cfg(not(target_os = "windows"))]
 fn discord_status(name: String) {
-    if !is_process_running("Discord") {
-        return;
-    }
-
-    {
-        let client = D_CLIENT.lock();
-        if client.is_err() {
+    thread::spawn(move || {
+        if !is_process_running("Discord") {
             return;
         }
-        let mut client = client.unwrap();
-        if name == "" {
-            client.clear_activity().unwrap_or_else(|_| {
-                client.connect().unwrap_or(());
-                client.clear_activity().unwrap_or(())
-            });
-        } else {
-            let start = SystemTime::now();
-            let since_the_epoch = start
-                .duration_since(UNIX_EPOCH)
-                .expect("Time went backwards")
-                .as_secs();
-            client
-                .set_activity(
-                    activity::Activity::new()
-                        .timestamps(Timestamps::new().start(since_the_epoch as i64))
-                        .assets(Assets::new().large_image("hedgehog"))
-                        .details(&format!("Listening to {name:?}")),
-                )
-                .unwrap_or_else(|_| {
+
+        {
+            let client = D_CLIENT.lock();
+            if client.is_err() {
+                return;
+            }
+            let mut client = client.unwrap();
+            if name == "" {
+                client.clear_activity().unwrap_or_else(|_| {
                     client.connect().unwrap_or(());
-                    client
-                        .set_activity(
-                            activity::Activity::new()
-                                .timestamps(Timestamps::new().start(since_the_epoch as i64))
-                                .assets(Assets::new().large_image("hedgehog"))
-                                .details(&format!("Listening to {name:?}")),
-                        )
-                        .unwrap_or(())
+                    client.clear_activity().unwrap_or(())
                 });
+            } else {
+                let start = SystemTime::now();
+                let since_the_epoch = start
+                    .duration_since(UNIX_EPOCH)
+                    .expect("Time went backwards")
+                    .as_secs();
+                client
+                    .set_activity(
+                        activity::Activity::new()
+                            .timestamps(Timestamps::new().start(since_the_epoch as i64))
+                            .assets(Assets::new().large_image("hedgehog"))
+                            .details(&format!("Listening to {name:?}")),
+                    )
+                    .unwrap_or_else(|_| {
+                        client.connect().unwrap_or(());
+                        client
+                            .set_activity(
+                                activity::Activity::new()
+                                    .timestamps(Timestamps::new().start(since_the_epoch as i64))
+                                    .assets(Assets::new().large_image("hedgehog"))
+                                    .details(&format!("Listening to {name:?}")),
+                            )
+                            .unwrap_or(())
+                    });
+            }
         }
-    }
+    });
 }
 
 #[cfg(not(target_os = "windows"))]
