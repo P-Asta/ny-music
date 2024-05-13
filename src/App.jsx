@@ -6,12 +6,17 @@ import "./App.css";
 import Music from "./components/Music"
 let PLAYING = "Cloudless"
 let START = 0;
+/** @type {"normal" | "repeat" | "shuffle"} */
+let MODE = "normal"
 
 function App() {
   const [greetMsg, setGreetMsg] = useState("");
   const [playing, setPlaying] = useState("Cloudless");
   const [status, setStatus] = useState("pause");
   const [musics, setMusics] = useState([]);
+  const [shuffle, setShuffle] = useState(false);
+  const [repeat, setRepeat] = useState(false);
+
   /** @type {React.MutableRefObject<HTMLAudioElement>} */
   const audioContainer = useRef()
 
@@ -26,7 +31,6 @@ function App() {
 
   /** @type {React.MutableRefObject<HTMLInputElement>} */
   const searchQuery = useRef()
-  
 
 
   useEffect(() => {
@@ -63,7 +67,12 @@ function App() {
           }
           progress.current.value = progressPercent
           if (progressPercent >= 995) {
-            musicNext()
+            console.log(MODE)
+            if (MODE == "normal") musicNext()
+            if (MODE == "shuffle") {
+              PLAYING = musics[(musics.indexOf(PLAYING) + Math.floor(Math.random() * (musics.length-1))) % musics.length]
+              setPlaying(PLAYING)
+            }
             progress.current.value = 0
             audioContainer.current.currentTime = 0
           }
@@ -189,10 +198,58 @@ function App() {
           }
         }}/>
         <div>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" onClick={() => {
+          setShuffle(!shuffle)
+          if (!shuffle && repeat) MODE = "repeat"
+          else if (!shuffle) MODE = "shuffle"
+          else if (repeat) MODE = "repeat"
+          else MODE = "normal"
+        }}>
+          <path
+            fill={shuffle?"var(--primary)":"#fff"}
+            d="M403.8 34.4c12-5 25.7-2.2 34.9 6.9l64 64c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-64 64c-9.2 9.2-22.9 11.9-34.9 6.9S384 204.8 384 191.8V160h-32c-10.1 0-19.6 4.7-25.6 12.8L284 229.3 244 176l31.2-41.6C293.3 110.2 321.8 96 352 96h32V64c0-12.9 7.8-24.6 19.8-29.6zM164 282.7l40 53.3-31.2 41.6C154.7 401.8 126.2 416 96 416H32c-17.7 0-32-14.3-32-32s14.3-32 32-32h64c10.1 0 19.6-4.7 25.6-12.8l42.4-56.5zm274.6 188c-9.2 9.2-22.9 11.9-34.9 6.9S383.9 461 383.9 448v-32H352c-30.2 0-58.7-14.2-76.8-38.4L121.6 172.8c-6-8.1-15.5-12.8-25.6-12.8H32c-17.7 0-32-14.3-32-32s14.3-32 32-32h64c30.2 0 58.7 14.2 76.8 38.4l153.6 204.8c6 8.1 15.5 12.8 25.6 12.8h32v-32c0-12.9 7.8-24.6 19.8-29.6s25.7-2.2 34.9 6.9l64 64c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-64 64z"
+          />
+        </svg>
 
           <img className="rev-x" src="skip.svg" alt=">>" onClick={musicPrev}/>
           <img id="status-change" src={status=="play"? "pause.svg":"play.svg"} alt={status=="play"? "||":"|>"} onClick={() => setStatus(status=="play"?"pause":"play")}/>
           <img src="skip.svg" alt=">>" onClick={musicNext}/>
+          {
+            repeat?
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 512 512"
+                onClick={() => {
+                  setRepeat(false)
+                  if (shuffle) MODE = "shuffle"
+                  else MODE = "normal"
+                }}
+              >
+                <g fill="var(--primary)" clipPath="url(#a)">
+                  <path d="M0 224c0 17.7 14.3 32 32 32s32-14.3 32-32c0-53 43-96 96-96h160v32c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l64-64c12.5-12.5 12.5-32.8 0-45.3l-64-64c-9.2-9.2-22.9-11.9-34.9-6.9S320 19.1 320 32v32H160C71.6 64 0 135.6 0 224Zm512 64c0-17.7-14.3-32-32-32s-32 14.3-32 32c0 53-43 96-96 96H192v-32c0-12.9-7.8-24.6-19.8-29.6s-25.7-2.2-34.9 6.9l-64 64c-12.5 12.5-12.5 32.8 0 45.3l64 64c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V448h160c88.4 0 160-71.6 160-160Z" />
+                  <path d="M266.438 191.692c0-3.941-2.171-7.548-5.645-9.419a10.594 10.594 0 0 0-10.955.535l-32.062 21.375c-4.943 3.273-6.246 9.886-2.972 14.828 3.273 4.943 9.919 6.246 14.828 2.973l15.43-10.32v97.59h-21.374A10.676 10.676 0 0 0 213 319.942a10.676 10.676 0 0 0 10.688 10.687h64.124a10.676 10.676 0 0 0 10.688-10.687 10.676 10.676 0 0 0-10.688-10.688h-21.374V191.692Z" />
+                </g>
+                <defs>
+                  <clipPath id="a">
+                    <path fill="#fff" d="M0 0h512v512H0z" />
+                  </clipPath>
+                </defs>
+              </svg> :
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" onClick={() => {
+                  setRepeat(true)
+                  console.log(shuffle, true)
+                  if (shuffle && true) MODE = "repeat"
+                  else if (shuffle) MODE = "shuffle"
+                  else if (true) MODE = "repeat"
+                  else MODE = "normal"
+                }}>
+                <path
+                  fill="#fff"
+                  d="M0 224c0 17.7 14.3 32 32 32s32-14.3 32-32c0-53 43-96 96-96h160v32c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l64-64c12.5-12.5 12.5-32.8 0-45.3l-64-64c-9.2-9.2-22.9-11.9-34.9-6.9S320 19.1 320 32v32H160C71.6 64 0 135.6 0 224zm512 64c0-17.7-14.3-32-32-32s-32 14.3-32 32c0 53-43 96-96 96H192v-32c0-12.9-7.8-24.6-19.8-29.6s-25.7-2.2-34.9 6.9l-64 64c-12.5 12.5-12.5 32.8 0 45.3l64 64c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V448h160c88.4 0 160-71.6 160-160z"
+                />
+              </svg>
+          }
         </div>
       </div>
     </main>;
