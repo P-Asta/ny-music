@@ -3,7 +3,6 @@ import reactLogo from "./assets/react.svg";
 import { invoke } from '@tauri-apps/api/tauri'
 import { appWindow } from "@tauri-apps/api/window";
 import Music from "./components/Music"
-let PLAYING = "Cloudless"
 let START = 0;
 
 
@@ -50,7 +49,6 @@ function App() {
 
 
   useEffect(() => {
-    if (musics.length == 0) return
     let interval = setInterval(async () => {
         if (audioContainer.current.paused || String(audioContainer.current.duration) == "NaN") {return}
         let progressPercent = audioContainer.current.currentTime / audioContainer.current.duration * 1000;
@@ -70,15 +68,14 @@ function App() {
 
         if (mode == "normal") musicNext()
         if (mode == "shuffle") {
-          PLAYING = musics[(musics.indexOf(PLAYING) + Math.floor(Math.random() * (musics.length-1))) % musics.length]
-          setPlaying(PLAYING)
+          setPlaying(musics[(musics.indexOf(playing) + Math.floor(Math.random() * (musics.length-1))) % musics.length])
         }
         progress.current.value = 0
         audioContainer.current.currentTime = 0
       }
     }
     return () => clearInterval(interval)
-  }, [musics, shuffle, repeat])
+  }, [musics, shuffle, repeat, playing])
 
   useEffect(() => {
     if (status == "play") {
@@ -128,15 +125,13 @@ function App() {
   function musicNext() {
     audioContainer.current.currentTime = 0
     progress.current.value = 0
-    PLAYING = musics[(musics.indexOf(PLAYING) + 1) % musics.length]
-    setPlaying(PLAYING)
+    setPlaying(musics[(musics.indexOf(playing) + 1) % musics.length])
   }
 
   function musicPrev() {
     audioContainer.current.currentTime = 0
     progress.current.value = 0
-    PLAYING = musics[(musics.indexOf(PLAYING) - 1 + musics.length) % musics.length]
-    setPlaying(PLAYING)
+    setPlaying(musics[(musics.indexOf(playing) - 1 + musics.length) % musics.length])
   }
 
   return <main>
@@ -167,7 +162,6 @@ function App() {
                 audioContainer.current.currentTime = 0
                 progress.current.value = 0
                 setPlaying(name)
-                PLAYING = name
               }}/>
             }
             return null
