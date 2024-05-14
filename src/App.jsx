@@ -2,12 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import reactLogo from "./assets/react.svg";
 import { invoke } from '@tauri-apps/api/tauri'
 import { appWindow } from "@tauri-apps/api/window";
-import "./App.css";
 import Music from "./components/Music"
 let PLAYING = "Cloudless"
 let START = 0;
-/** @type {"normal" | "repeat" | "shuffle"} */
-let MODE = "normal"
+
 
 function App() {
   const [greetMsg, setGreetMsg] = useState("");
@@ -36,6 +34,7 @@ function App() {
   useEffect(() => {
     if (START == 1) return
     START = 1
+
     fetch(`https://fback.imnyang.xyz//NY64_Cover/list?${Date.now()}`).then(res => res.text().then(data => {
       setMusics(eval(data))
     }));
@@ -52,33 +51,34 @@ function App() {
 
   useEffect(() => {
     if (musics.length == 0) return
-    setInterval(async () => {
-        let overPlay = progress.current.value - audioContainer.current.currentTime / audioContainer.current.duration * 1000;
-        if (String(overPlay) == "NaN") overPlay = 0
-
-        if (await appWindow.isFocused() && (overPlay > 10 || overPlay < -10)) {
-          audioContainer.current.currentTime = progress.current.value / 1000 * audioContainer.current.duration
-        }else {
-          if (audioContainer.current.paused || String(audioContainer.current.duration) == "NaN") {return}
-
-          let progressPercent = audioContainer.current.currentTime / audioContainer.current.duration * 1000;
-          if (String(progressPercent) == "NaN") { 
-            progressPercent = 0
-          }
-          progress.current.value = progressPercent
-          if (progressPercent >= 990) {
-            console.log(MODE)
-            if (MODE == "normal") musicNext()
-            if (MODE == "shuffle") {
-              PLAYING = musics[(musics.indexOf(PLAYING) + Math.floor(Math.random() * (musics.length-1))) % musics.length]
-              setPlaying(PLAYING)
-            }
-            progress.current.value = 0
-            audioContainer.current.currentTime = 0
-          }
+    let interval = setInterval(async () => {
+        if (audioContainer.current.paused || String(audioContainer.current.duration) == "NaN") {return}
+        let progressPercent = audioContainer.current.currentTime / audioContainer.current.duration * 1000;
+        if (String(progressPercent) == "NaN") { 
+          progressPercent = 0
         }
+        progress.current.value = progressPercent
     }, 100)
-  }, [musics])
+
+    audioContainer.current.onended = () => {
+      console.log("ended")
+      if (audioContainer.current.ended) {
+        let mode = "normal"
+        if (shuffle && repeat) mode = "repeat"
+        else if (shuffle) mode = "shuffle"
+        else if (repeat) mode = "repeat"
+
+        if (mode == "normal") musicNext()
+        if (mode == "shuffle") {
+          PLAYING = musics[(musics.indexOf(PLAYING) + Math.floor(Math.random() * (musics.length-1))) % musics.length]
+          setPlaying(PLAYING)
+        }
+        progress.current.value = 0
+        audioContainer.current.currentTime = 0
+      }
+    }
+    return () => clearInterval(interval)
+  }, [musics, shuffle, repeat])
 
   useEffect(() => {
     if (status == "play") {
@@ -114,9 +114,6 @@ function App() {
       
         audioSource.current.src = `https://fback.imnyang.xyz//NY64_Cover/Cover/${playing}.mp3?${date}`
         audioContainer.current.load()
-
-        progress.current.value = 0
-        audioContainer.current.currentTime = 0
       }
       audioContainer.current.play()
       invoke('discord_status', {name: playing})
@@ -178,7 +175,7 @@ function App() {
         </div>
       </div>
       <div id="bar">
-        <input type="range" min="0" max="1000" ref={progress} onChange={() => {
+        <input type="range" min="0" max="1000" ref={progress} onChange={e => {
           if (!decodeURI(audioSource.current.src).startsWith(`https://fback.imnyang.xyz//NY64_Cover/Cover/${playing}.mp3`)) {
             let date = Date.now();
             navigator.mediaSession.metadata = new MediaMetadata({
@@ -195,15 +192,19 @@ function App() {
             });
             audioSource.current.src = `https://fback.imnyang.xyz//NY64_Cover/Cover/${playing}.mp3?${date}`
             audioContainer.current.load()
+            audioContainer.current.onloadedmetadata = () => {
+              audioContainer.current.currentTime = audioContainer.current.duration * Number(e.target.value)/1000
+              console.log(audioContainer.current.duration, Number(e.target.value))
+            }
+            return
           }
+          let time = audioContainer.current.duration * Number(e.target.value)/1000;
+          console.log(time)
+          audioContainer.current.currentTime = time
         }}/>
         <div>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" onClick={() => {
           setShuffle(!shuffle)
-          if (!shuffle && repeat) MODE = "repeat"
-          else if (!shuffle) MODE = "shuffle"
-          else if (repeat) MODE = "repeat"
-          else MODE = "normal"
         }}>
           <path
             fill={shuffle?"var(--primary)":"#fff"}
@@ -222,8 +223,6 @@ function App() {
                 viewBox="0 0 512 512"
                 onClick={() => {
                   setRepeat(false)
-                  if (shuffle) MODE = "shuffle"
-                  else MODE = "normal"
                 }}
               >
                 <g fill="var(--primary)" clipPath="url(#a)">
@@ -238,11 +237,6 @@ function App() {
               </svg> :
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" onClick={() => {
                   setRepeat(true)
-                  console.log(shuffle, true)
-                  if (shuffle && true) MODE = "repeat"
-                  else if (shuffle) MODE = "shuffle"
-                  else if (true) MODE = "repeat"
-                  else MODE = "normal"
                 }}>
                 <path
                   fill="#fff"
