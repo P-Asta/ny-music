@@ -102,18 +102,41 @@ fn discord_status(name: String) {
         }
     });
 }
+
 #[tauri::command]
+#[cfg(not(target_os = "windows"))]
 fn custom_css() -> String {
     let home = std::env::home_dir().unwrap().to_str().unwrap().to_owned();
+
     std::fs::read_to_string(format!("{home}/.config/ny-music/theme.css")).unwrap_or_else(|e| {
         std::fs::create_dir(format!("{home}/.config")).unwrap_or_else(|_| {});
         std::fs::create_dir(format!("{home}/.config/ny-music")).unwrap_or_else(|_| {});
+
         std::fs::write(
             format!("{home}/.config/ny-music/theme.css"),
             ":root {\n\t--gray: #313244;\n\t--black: #1e1e2e;\n\t--primary: #a6e3a1;\n}",
         )
         .unwrap_or_else(|_| {});
         return ":root {\n\t--gray: #313244;\n\t--black: #1e1e2e;\n\t--primary: #a6e3a1;\n}"
+            .to_string();
+    })
+}
+
+#[tauri::command]
+#[cfg(target_os = "windows")]
+fn custom_css() -> String {
+    let home = std::env::home_dir().unwrap().to_str().unwrap().to_owned();
+
+    std::fs::read_to_string(format!("{home}/.config/ny-music/theme.css")).unwrap_or_else(|e| {
+        std::fs::create_dir(format!("{home}/.config")).unwrap_or_else(|_| {});
+        std::fs::create_dir(format!("{home}/.config/ny-music")).unwrap_or_else(|_| {});
+
+        std::fs::write(
+            format!("{home}/.config/ny-music/theme.css"),
+            ":root {\n\t--gray: #313244;\n\t--black: #1e1e2e;\n\t--primary: #a6e3a1;\n}\nhtml,body {\n\tbackground: #11111b;\n}",
+        )
+        .unwrap_or_else(|_| {});
+        return ":root {\n\t--gray: #313244;\n\t--black: #1e1e2e;\n\t--primary: #a6e3a1;\n}\nhtml,body {\n\tbackground: #11111b;\n}"
             .to_string();
     })
 }
