@@ -7,13 +7,13 @@ let START = 0;
 
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [playing, setPlaying] = useState("Cloudless");
+  const [customCss, setCustomCss] = useState("");
+  const [playing, setPlaying] = useState("");
   const [status, setStatus] = useState("pause");
-  const [musics, setMusics] = useState([]);
+  const [musics, setMusics] = useState({});
+  const [savedMusic, setSavedMusic] = useState({});
   const [shuffle, setShuffle] = useState(false);
   const [repeat, setRepeat] = useState(false);
-
   /** @type {React.MutableRefObject<HTMLAudioElement>} */
   const audioContainer = useRef()
 
@@ -25,23 +25,72 @@ function App() {
   
   /** @type {React.MutableRefObject<HTMLInputElement>} */
   const volume = useRef()
-
   /** @type {React.MutableRefObject<HTMLInputElement>} */
   const searchQuery = useRef()
+
 
 
   useEffect(() => {
     if (START == 1) return
     START = 1
-
-    fetch(`https://fback.imnyang.xyz//NY64_Cover/list?${Date.now()}`).then(res => res.text().then(data => {
-      setMusics(eval(data))
-    }));
-    setInterval(() => {
+    let sus = async () => setCustomCss(await invoke("custom_css"))
+    sus()
+    if (window.navigator.onLine) {
       fetch(`https://fback.imnyang.xyz//NY64_Cover/list?${Date.now()}`).then(res => res.text().then(data => {
-        setMusics(eval(data))
+        let pAsta = {}
+        for (let name of eval(data)) {
+          pAsta[name] = {
+            image: `https://fback.imnyang.xyz//NY64_Cover/Image/${name}.jpg?${Date.now()}`,
+            cover: `https://fback.imnyang.xyz//NY64_Cover/Cover/${name}.mp3?${Date.now()}`
+          }
+        }
+        setMusics(pAsta)
+        setPlaying(Object.entries(pAsta)[0][0])
       }));
+    }
+    setInterval(() => {
+      if (window.navigator.onLine) {
+        fetch(`https://fback.imnyang.xyz//NY64_Cover/list?${Date.now()}`).then(res => res.text().then(data => {
+          let pAsta = {}
+          for (let name of eval(data)) {
+            pAsta[name] = {
+              image: `https://fback.imnyang.xyz//NY64_Cover/Image/${name}.jpg?${Date.now()}`,
+              cover: `https://fback.imnyang.xyz//NY64_Cover/Cover/${name}.mp3?${Date.now()}`
+            }
+          } 
+          setMusics(pAsta)
+        }));
+      }
     }, 10000)
+
+    const dbOpen = indexedDB.open("ny-music");
+    
+    dbOpen.onupgradeneeded = (e) => {
+      console.log("onupgradeneeded")
+      let db = e.target.result;
+      db.createObjectStore('musics', {keyPath: 'name'});
+    }
+
+    dbOpen.onsuccess = () => {
+      const db = dbOpen.result;
+      const transaction = db.transaction(["musics"], "readwrite");
+      const musics = transaction.objectStore("musics");
+      let request = musics.getAll()
+      request.onsuccess = e => {
+        let pAsta = {...savedMusic}
+        for (let i of e.target.result) {
+          pAsta[i.name] = {
+            image: URL.createObjectURL(i.image),
+            cover: URL.createObjectURL(i.cover)
+          }
+        }
+        setSavedMusic(pAsta)
+        if (!window.navigator.onLine) {
+          setMusics(pAsta)
+          setPlaying(Object.entries(pAsta)[0][0])
+        }
+      };
+    }
     volume.current.value = 100
     progress.current.value = 0
     audioContainer.current.currentTime = 0
@@ -55,43 +104,43 @@ function App() {
         if (String(progressPercent) == "NaN") { 
           progressPercent = 0
         }
+
+        if (!window.navigator.onLine)
+          setMusics({...savedMusic})
         progress.current.value = progressPercent
     }, 100)
 
     audioContainer.current.onended = () => {
-      console.log("ended")
-      if (audioContainer.current.ended) {
-        let mode = "normal"
-        if (shuffle && repeat) mode = "repeat"
-        else if (shuffle) mode = "shuffle"
-        else if (repeat) mode = "repeat"
-
-        if (mode == "normal") musicNext()
-        if (mode == "shuffle") {
-          setPlaying(musics[(musics.indexOf(playing) + Math.floor(Math.random() * (musics.length-1))) % musics.length])
-        }
-        progress.current.value = 0
-        audioContainer.current.currentTime = 0
+      let mode = "normal"
+      if (shuffle && repeat) mode = "repeat"
+      else if (shuffle) mode = "shuffle"
+      else if (repeat) mode = "repeat"
+      if (mode == "normal") musicNext()
+      if (mode == "shuffle") {
+        let keys = [...getKey(musics)]
+        setPlaying(keys[(keys.indexOf(playing) + Math.floor(Math.random() * (keys.length-1))) % keys.length])
       }
+      progress.current.value = 0
+      audioContainer.current.currentTime = 0
+      audioContainer.current.play()
     }
     return () => clearInterval(interval)
-  }, [musics, shuffle, repeat, playing])
+  }, [musics, shuffle, repeat, playing, savedMusic])
 
   useEffect(() => {
     if (status == "play") {
       audioContainer.current.play()
-      if (!decodeURI(audioSource.current.src).startsWith(`https://fback.imnyang.xyz//NY64_Cover/Cover/${playing}.mp3`)) {
-        let date = Date.now();
+      if (decodeURI(audioSource.current.src).split("?")[0] != musics[playing].cover.split("?")[0]) {
         navigator.mediaSession.metadata = new MediaMetadata({
           title: playing,
           album: "NY Music",
           artwork: [
-            { src: `https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg?${date}`, sizes: '96x96', type: 'image/png' },
-            { src: `https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg?${date}`, sizes: '128x128', type: 'image/png' },
-            { src: `https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg?${date}`, sizes: '192x192', type: 'image/png' },
-            { src: `https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg?${date}`, sizes: '256x256', type: 'image/png' },
-            { src: `https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg?${date}`, sizes: '384x384', type: 'image/png' },
-            { src: `https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg?${date}`, sizes: '512x512', type: 'image/png' },
+            { src: musics[playing].image, sizes: '96x96', type: 'image/png' },
+            { src: musics[playing].image, sizes: '128x128', type: 'image/png' },
+            { src: musics[playing].image, sizes: '192x192', type: 'image/png' },
+            { src: musics[playing].image, sizes: '256x256', type: 'image/png' },
+            { src: musics[playing].image, sizes: '384x384', type: 'image/png' },
+            { src: musics[playing].image, sizes: '512x512', type: 'image/png' },
           ]
         });
         navigator.mediaSession.setActionHandler(
@@ -109,7 +158,7 @@ function App() {
       
 
       
-        audioSource.current.src = `https://fback.imnyang.xyz//NY64_Cover/Cover/${playing}.mp3?${date}`
+        audioSource.current.src = musics[playing].cover
         audioContainer.current.load()
       }
       audioContainer.current.play()
@@ -125,40 +174,50 @@ function App() {
   function musicNext() {
     audioContainer.current.currentTime = 0
     progress.current.value = 0
-    setPlaying(musics[(musics.indexOf(playing) + 1) % musics.length])
+    let keys = [...getKey(musics)]
+    setPlaying(keys[(keys.indexOf(playing) + 1) % keys.length])
   }
 
   function musicPrev() {
     audioContainer.current.currentTime = 0
     progress.current.value = 0
-    setPlaying(musics[(musics.indexOf(playing) - 1 + musics.length) % musics.length])
+    let keys = [...getKey(musics)]
+    setPlaying(keys[(keys.indexOf(playing) - 1 + keys.length) % keys.length])
+  }
+  /**
+   * 
+   * @param {*} element 
+   * @returns 
+   */
+  function getKey(element) {
+    return Object.entries(element).map(e => e[0])
   }
 
   return <main>
+      <style>{customCss}</style>
       <audio id="audioContainer" ref={audioContainer}>
         <source id="audioSource" src="" ref={audioSource}/>
-        <source src="https://fback.imnyang.xyz//NY64_Cover/Cover/Bad Apple.mp3"/>
+        <source src="https://fback.imnyang.xyz//NY64_Cover/ETC/furry.mp3"/>
         Your browser does not support the audio format.
       </audio>
 
       <div id="music">
         <div>
-          <img src={`https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg`} /> {playing}
+          <img src={getKey(musics).indexOf(playing) != -1? musics[playing].image: "idk"} /> {playing}
         </div>
         <div>
           <input type="range" min="0" max="100" ref={volume} onChange={() => {audioContainer.current.volume = volume.current.value/100}}/>
         </div>
       </div>
       <div id="greet">
-        <input type="text" id="search" placeholder="search..." ref={searchQuery} onInput={() => setMusics([...musics])}/>
+        <input type="text" id="search" placeholder="search..." ref={searchQuery} onInput={() => setMusics({...musics})}/>
         <div id="musics">
-          {musics.map((name, i) => {
+          {Object.entries(musics).map((musicEntry, i) => {
             let q = searchQuery.current.value.replace(/ /gim, "").toLowerCase();
-            
             /** @type {String} */
-            let test_name = name.replace(/ /gim, "").toLowerCase();
+            let test_name = musicEntry[0].replace(/ /gim, "").toLowerCase();
             if (test_name.includes(q)) {
-              return <Music key={i} name={name} q={q} onClick={(name) => {
+              return <Music key={i} musicEntry={musicEntry} q={q} playing={playing} savedMusic={[savedMusic, setSavedMusic]} onClick={(name) => {
                 audioContainer.current.currentTime = 0
                 progress.current.value = 0
                 setPlaying(name)
@@ -170,30 +229,28 @@ function App() {
       </div>
       <div id="bar">
         <input type="range" min="0" max="1000" ref={progress} onChange={e => {
-          if (!decodeURI(audioSource.current.src).startsWith(`https://fback.imnyang.xyz//NY64_Cover/Cover/${playing}.mp3`)) {
+          if (decodeURI(audioSource.current.src).split("?")[0] != musics[playing].cover.split("?")[0]) {
             let date = Date.now();
             navigator.mediaSession.metadata = new MediaMetadata({
               title: playing,
               album: "NY Music",
               artwork: [
-                { src: `https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg?${date}`, sizes: '96x96', type: 'image/png' },
-                { src: `https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg?${date}`, sizes: '128x128', type: 'image/png' },
-                { src: `https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg?${date}`, sizes: '192x192', type: 'image/png' },
-                { src: `https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg?${date}`, sizes: '256x256', type: 'image/png' },
-                { src: `https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg?${date}`, sizes: '384x384', type: 'image/png' },
-                { src: `https://fback.imnyang.xyz//NY64_Cover/Image/${playing}.jpg?${date}`, sizes: '512x512', type: 'image/png' },
+                { src: musics[playing].image, sizes: '96x96', type: 'image/png' },
+                { src: musics[playing].image, sizes: '128x128', type: 'image/png' },
+                { src: musics[playing].image, sizes: '192x192', type: 'image/png' },
+                { src: musics[playing].image, sizes: '256x256', type: 'image/png' },
+                { src: musics[playing].image, sizes: '384x384', type: 'image/png' },
+                { src: musics[playing].image, sizes: '512x512', type: 'image/png' },
               ]
             });
-            audioSource.current.src = `https://fback.imnyang.xyz//NY64_Cover/Cover/${playing}.mp3?${date}`
+            audioSource.current.src = musics[playing].cover
             audioContainer.current.load()
             audioContainer.current.onloadedmetadata = () => {
               audioContainer.current.currentTime = audioContainer.current.duration * Number(e.target.value)/1000
-              console.log(audioContainer.current.duration, Number(e.target.value))
             }
             return
           }
           let time = audioContainer.current.duration * Number(e.target.value)/1000;
-          console.log(time)
           audioContainer.current.currentTime = time
         }}/>
         <div>

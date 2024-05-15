@@ -16,6 +16,7 @@
 }
 
 :root {
+  --gray: #313244;
   --black: #1e1e2e;
   --primary: #a6e3a1;
 }
@@ -31,7 +32,7 @@ body {
 
 body {
   --padding: 20px;
-  padding: var(--padding);
+  padding: var(--padding) !important;
 }
 
 main {
@@ -41,7 +42,9 @@ main {
 }
 b {
   font-weight: 900;
-
+}
+p {
+  color: var(--primary)
 }
 
 #greet {
@@ -169,14 +172,24 @@ b {
 .music {
   display: flex;
   align-items: center;
-  gap: 8px;
   cursor: pointer;
   transition: all .5s;
   &:hover{
     transform: scale(1.02);
   }
-
-  > img {
+  > div {
+    display: flex;
+    width:  calc(100% - 20px);
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+  > svg {
+    width: 20px;
+    height: 20px;
+  }
+  > div > img {
+    
     width: 44px;
     border-radius: 2px;
   }
