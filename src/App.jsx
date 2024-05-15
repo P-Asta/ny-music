@@ -40,7 +40,7 @@ function App() {
         let pAsta = {}
         for (let name of eval(data)) {
           pAsta[name] = {
-            image: `https://fback.imnyang.xyz//NY64_Cover/Image/${name}.jpg?${Date.now()}`,
+            image: `https://fback.imnyang.xyz//NY64_Cover/Image/${name}.webp?${Date.now()}`,
             cover: `https://fback.imnyang.xyz//NY64_Cover/Cover/${name}.mp3?${Date.now()}`
           }
         }
@@ -54,7 +54,7 @@ function App() {
           let pAsta = {}
           for (let name of eval(data)) {
             pAsta[name] = {
-              image: `https://fback.imnyang.xyz//NY64_Cover/Image/${name}.jpg?${Date.now()}`,
+              image: `https://fback.imnyang.xyz//NY64_Cover/Image/${name}.webp?${Date.now()}`,
               cover: `https://fback.imnyang.xyz//NY64_Cover/Cover/${name}.mp3?${Date.now()}`
             }
           } 
