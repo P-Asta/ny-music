@@ -17,5 +17,6 @@ xattr -cr 설치한dmg파일경로
 
 
 ## special thx
-[@ny64](https://github.com/ny0510)
-[@imnyang](https://github.com/imnyang)
+- [@ny64](https://github.com/ny0510)
+- [@imnyang](https://github.com/imnyang)
+- [@GonGe1018](https://github.com/GonGe1018)
