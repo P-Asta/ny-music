@@ -49,10 +49,10 @@ export default function Music({musicEntry, onClick, q, playing, savedMusic}) {
 						/** @type {IDBTransaction} */
 						// const transaction = db.transaction("musics", "readwrite");
 						// const musics = transaction.objectStore("musics");
-						fetch(`https://f.imnyang.xyz//NY64_Cover/Cover/${name}.mp3`)
+						fetch(`https://f.imnyang.xyz/NY64_Cover/Cover/${name}.mp3`)
 							.then(res => res.blob())
 							.then(cover => {
-								fetch(`https://f.imnyang.xyz//NY64_Cover/Image/${name}.webp`)
+								fetch(`https://f.imnyang.xyz/NY64_Cover/Image/${name}.webp`)
 									.then(res => res.blob())
 									.then(image => {
 										const transaction = db.transaction(["musics"], "readwrite");

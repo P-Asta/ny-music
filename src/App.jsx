@@ -36,12 +36,12 @@ function App() {
     let sus = async () => setCustomCss(await invoke("custom_css"))
     sus()
     if (window.navigator.onLine) {
-      fetch(`https://fback.imnyang.xyz//NY64_Cover/list?${Date.now()}`).then(res => res.text().then(data => {
+      fetch(`https://f.imnyang.xyz/NY64_Cover/list?${Date.now()}`).then(res => res.text().then(data => {
         let pAsta = {}
         for (let name of eval(data)) {
           pAsta[name] = {
-            image: `https://fback.imnyang.xyz//NY64_Cover/Image/${name}.webp?${Date.now()}`,
-            cover: `https://fback.imnyang.xyz//NY64_Cover/Cover/${name}.mp3?${Date.now()}`
+            image: `https://f.imnyang.xyz/NY64_Cover/Image/${name}.webp?${Date.now()}`,
+            cover: `https://f.imnyang.xyz/NY64_Cover/Cover/${name}.mp3?${Date.now()}`
           }
         }
         setMusics(pAsta)
@@ -50,12 +50,12 @@ function App() {
     }
     setInterval(() => {
       if (window.navigator.onLine) {
-        fetch(`https://fback.imnyang.xyz//NY64_Cover/list?${Date.now()}`).then(res => res.text().then(data => {
+        fetch(`https://f.imnyang.xyz/NY64_Cover/list?${Date.now()}`).then(res => res.text().then(data => {
           let pAsta = {}
           for (let name of eval(data)) {
             pAsta[name] = {
-              image: `https://fback.imnyang.xyz//NY64_Cover/Image/${name}.webp?${Date.now()}`,
-              cover: `https://fback.imnyang.xyz//NY64_Cover/Cover/${name}.mp3?${Date.now()}`
+              image: `https://f.imnyang.xyz/NY64_Cover/Image/${name}.webp?${Date.now()}`,
+              cover: `https://f.imnyang.xyz/NY64_Cover/Cover/${name}.mp3?${Date.now()}`
             }
           } 
           setMusics(pAsta)
@@ -197,7 +197,7 @@ function App() {
       <style>{customCss}</style>
       <audio id="audioContainer" ref={audioContainer}>
         <source id="audioSource" src="" ref={audioSource}/>
-        <source src="https://fback.imnyang.xyz//NY64_Cover/ETC/furry.mp3"/>
+        <source src="https://f.imnyang.xyz/NY64_Cover/ETC/furry.mp3"/>
         Your browser does not support the audio format.
       </audio>
 
