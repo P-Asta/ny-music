@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import reactLogo from "./assets/react.svg";
-import { invoke } from '@tauri-apps/api/tauri'
-import { appWindow } from "@tauri-apps/api/window";
+import { invoke } from '@tauri-apps/api/core'
+import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import Music from "./components/Music"
+const appWindow = getCurrentWebviewWindow()
 let START = 0;
 
 

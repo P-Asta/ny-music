@@ -33,9 +33,10 @@ fn main() {
     }
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_shell::init())
         .invoke_handler(tauri::generate_handler![discord_status, custom_css])
         .setup(|app| {
-            let window = app.get_window("main").unwrap();
+            let window = app.get_webview_window("main").unwrap();
             #[cfg(target_os = "windows")]
             {
                 window.open_devtools();
