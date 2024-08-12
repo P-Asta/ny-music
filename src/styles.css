@@ -24,11 +24,26 @@
 html,
 body {
   background: transparent;
+  /* background-color: rgba(0, 7, 68, 0); */
 }
 
-/* html {
-  background-color: rgba(0, 7, 68, 0);
-} */
+@media (width < 500px) {
+  html, body {
+    background-color: #313244;
+    height: 100vh;
+    overflow: scroll;
+  }
+
+  main {
+    gap: 0px;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  #music > div:last-child { 
+    display: none !important;
+  }
+}
 
 body {
   --padding: 20px;
@@ -40,9 +55,11 @@ main {
   gap: 40px;
   width: 100%;
 }
+
 b {
   font-weight: 900;
 }
+
 p {
   color: var(--primary)
 }
@@ -67,6 +84,7 @@ p {
   border: 0;
   font-size: 14px;
 }
+
 #musics {
   display: flex;
   flex-direction: column;

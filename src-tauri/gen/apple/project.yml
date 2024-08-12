@@ -1,6 +1,6 @@
 name: ny-music
 options:
-  bundleIdPrefix: com.tauri.dev
+  bundleIdPrefix: kr.ny64.music
   deploymentTarget:
     iOS: 13.0
 fileGroups: [../../src]
@@ -11,7 +11,7 @@ settingGroups:
   app:
     base:
       PRODUCT_NAME: ny-music
-      PRODUCT_BUNDLE_IDENTIFIER: com.tauri.dev
+      PRODUCT_BUNDLE_IDENTIFIER: kr.ny64.music
       CODE_SIGN_STYLE: Automatic
 targetTemplates:
   app:

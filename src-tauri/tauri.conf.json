@@ -1,7 +1,7 @@
 {
   "productName": "ny-music",
   "version": "0.0.0",
-  "identifier": "com.tauri.dev",
+  "identifier": "kr.ny64.music",
   "build": {
     "beforeDevCommand": "yarn dev",
     "devUrl": "http://localhost:1420",

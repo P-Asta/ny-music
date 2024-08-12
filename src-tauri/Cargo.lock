@@ -1793,7 +1793,7 @@ dependencies = [
 
 [[package]]
 name = "ny-music"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "discord-rich-presence",
  "lazy_static",
