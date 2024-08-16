@@ -31,15 +31,32 @@ body {
   html, body {
     background-color: #313244;
     height: 100vh;
-    overflow: scroll;
+    overflow: hidden;
   }
 
   main {
-    gap: 0px;
+    gap: 0px !important;
     align-items: center;
     flex-direction: column;
   }
 
+  #search {
+    display: none !important;
+  }
+
+  #musics {
+    overflow: scroll;
+    height: calc(100dvh - 357px - 65px - 50px) !important;
+  }
+  #music > div > h1 {
+    display: -webkit-box;
+    text-align: center;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    height: 30px;
+    overflow: hidden;
+    
+  }
   #music > div:last-child { 
     display: none !important;
   }
@@ -109,8 +126,10 @@ p {
     width: 240px;
     word-break: break-word;
     gap: 8px;
-    font-size: 24px;
-    font-weight: 500;
+    > h1 {
+      font-size: 24px;
+      font-weight: 500;
+    }
     margin-bottom: 80px;
     > img {
       width: 240px;

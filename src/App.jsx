@@ -204,7 +204,8 @@ function App() {
 
       <div id="music">
         <div>
-          <img src={getKey(musics).indexOf(playing) != -1? musics[playing].image: "idk"} /> {playing}
+          <img src={getKey(musics).indexOf(playing) != -1? musics[playing].image: "idk"} /> 
+          <h1>{playing}</h1>
         </div>
         <div>
           <input type="range" min="0" max="100" ref={volume} onChange={() => {audioContainer.current.volume = volume.current.value/100}}/>
