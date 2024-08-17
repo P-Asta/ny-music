@@ -29,8 +29,11 @@ body {
 
 @media (width < 500px) {
   html, body {
-    background-color: #313244;
-    height: 100vh;
+    background: #313244 !important;
+  }
+
+  body {
+    height: 120vh !important;
     overflow: hidden;
   }
 
