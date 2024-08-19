@@ -1,6 +1,6 @@
 {
   "productName": "ny-music",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "identifier": "kr.ny64.music",
   "build": {
     "beforeDevCommand": "yarn dev",

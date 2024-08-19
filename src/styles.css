@@ -28,15 +28,13 @@ body {
 }
 
 @media (width < 500px) {
-  html, body {
+  html, body, #root {
     background: #313244 !important;
+    overflow: hidden !important;
   }
-
   body {
-    height: 120vh !important;
-    overflow: hidden;
+    height: 100vh !important;
   }
-
   main {
     gap: 0px !important;
     align-items: center;
@@ -56,6 +54,7 @@ body {
     text-align: center;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 1;
+    line-clamp: 1;
     height: 30px;
     overflow: hidden;
     

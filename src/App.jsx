@@ -195,6 +195,7 @@ function App() {
   }
 
   return <main>
+      <header></header>
       <style>{customCss}</style>
       <audio id="audioContainer" ref={audioContainer}>
         <source id="audioSource" src="" ref={audioSource}/>
