@@ -58,8 +58,11 @@ pub fn run() {
         .expect("error while running tauri application");
 }
 
+#[cfg(target_os = "windows")]
+fn discord_status(name: String) {}
+
 #[tauri::command]
-// #[cfg(not(target_os = "windows"))]
+#[cfg(not(target_os = "windows"))]
 fn discord_status(name: String) {
     thread::spawn(move || {
         if !is_process_running("Discord") {
@@ -107,7 +110,7 @@ fn discord_status(name: String) {
 }
 
 #[tauri::command]
-#[cfg(not(target_os = "windows"))]
+#[cfg(target_os = "macos")]
 fn custom_css() -> String {
     #[allow(deprecated)]
     let home = std::env::home_dir().unwrap().to_str().unwrap().to_owned();
@@ -124,6 +127,13 @@ fn custom_css() -> String {
         return ":root {\n\t--gray: #313244;\n\t--black: #1e1e2e;\n\t--primary: #a6e3a1;\n}"
             .to_string();
     })
+}
+
+#[tauri::command]
+#[cfg(not(target_os = "macos"))]
+#[cfg(not(target_os = "windows"))]
+fn custom_css() -> String {
+    "".to_string()
 }
 
 #[tauri::command]

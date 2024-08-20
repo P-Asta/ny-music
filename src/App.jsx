@@ -29,8 +29,6 @@ function App() {
   /** @type {React.MutableRefObject<HTMLInputElement>} */
   const searchQuery = useRef()
 
-
-
   useEffect(() => {
     if (START == 1) return
     START = 1

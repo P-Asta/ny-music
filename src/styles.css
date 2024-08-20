@@ -13,6 +13,7 @@
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  -webkit-tap-highlight-color: #00000000;
 }
 
 :root {
@@ -28,13 +29,18 @@ body {
 }
 
 @media (width < 500px) {
-  html, body, #root {
+
+  html,
+  body,
+  #root {
     background: #313244 !important;
     overflow: hidden !important;
   }
+
   body {
     height: 100vh !important;
   }
+
   main {
     gap: 0px !important;
     align-items: center;
@@ -49,7 +55,19 @@ body {
     overflow: scroll;
     height: calc(100dvh - 357px - 65px - 50px) !important;
   }
-  #music > div > h1 {
+
+  .music {
+
+    &:hover {
+      transform: scale(1.0) !important;
+    }
+
+    &:active {
+      /* backdrop-filter: brightness(0.7) */
+    }
+  }
+
+  #music>div>h1 {
     display: -webkit-box;
     text-align: center;
     -webkit-box-orient: vertical;
@@ -57,9 +75,10 @@ body {
     line-clamp: 1;
     height: 30px;
     overflow: hidden;
-    
+
   }
-  #music > div:last-child { 
+
+  #music>div:last-child {
     display: none !important;
   }
 }
@@ -121,24 +140,29 @@ p {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  > div:first-child {
+
+  >div:first-child {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 240px;
     word-break: break-word;
     gap: 8px;
-    > h1 {
+
+    >h1 {
       font-size: 24px;
       font-weight: 500;
     }
+
     margin-bottom: 80px;
-    > img {
+
+    >img {
       width: 240px;
       border-radius: 4px;
     }
   }
-  > div:last-child {
+
+  >div:last-child {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -147,11 +171,13 @@ p {
     border-radius: 4px;
     opacity: 0;
     transition: all .3s;
+
     &:hover {
       opacity: 1;
     }
   }
 }
+
 #bar {
   display: flex;
   flex-direction: column;
@@ -163,37 +189,44 @@ p {
   bottom: var(--padding);
   border-radius: 4px;
   background-color: var(--black);
-  > input {
+
+  >input {
     width: 100%;
   }
-  > div {
+
+  >div {
     display: flex;
     gap: 20px;
     align-items: center;
     justify-content: center;
-  
-    > svg {
+
+    >svg {
       cursor: pointer;
       width: 16px;
       transition: all .1s;
+
       &:active {
         transform: scale(0.92);
       }
     }
-    > img {
+
+    >img {
       cursor: pointer;
       width: 16px;
-      &:nth-child(3){
+
+      &:nth-child(3) {
         width: 24px;
       }
 
 
       transition: all .1s;
+
       &:active {
         transform: scale(0.92);
       }
+
       &.rev-x:active {
-        transform: scaleX(-0.92) scaleY(0.92);  
+        transform: scaleX(-0.92) scaleY(0.92);
       }
     }
   }
@@ -213,22 +246,26 @@ p {
   align-items: center;
   cursor: pointer;
   transition: all .5s;
-  &:hover{
+
+  &:hover {
     transform: scale(1.02);
   }
-  > div {
+
+  >div {
     display: flex;
-    width:  calc(100% - 20px);
+    width: calc(100% - 20px);
     align-items: center;
     gap: 8px;
     cursor: pointer;
   }
-  > svg {
+
+  >svg {
     width: 20px;
     height: 20px;
   }
-  > div > img {
-    
+
+  >div>img {
+
     width: 44px;
     border-radius: 2px;
   }
