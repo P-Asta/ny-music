@@ -62,7 +62,11 @@ pub fn run() {
 fn discord_status(name: String) {}
 
 #[tauri::command]
-#[cfg(not(target_os = "windows"))]
+#[cfg(not(target_os = "macos"))]
+fn discord_status(name: String) {}
+
+#[tauri::command]
+#[cfg(target_os = "macos")]
 fn discord_status(name: String) {
     thread::spawn(move || {
         if !is_process_running("Discord") {

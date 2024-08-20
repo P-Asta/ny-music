@@ -130,32 +130,34 @@ function App() {
     if (status == "play") {
       audioContainer.current.play()
       if (decodeURI(audioSource.current.src).split("?")[0] != musics[playing].cover.split("?")[0]) {
-        navigator.mediaSession.metadata = new MediaMetadata({
-          title: playing,
-          album: "NY Music",
-          artwork: [
-            { src: musics[playing].image, sizes: '96x96', type: 'image/png' },
-            { src: musics[playing].image, sizes: '128x128', type: 'image/png' },
-            { src: musics[playing].image, sizes: '192x192', type: 'image/png' },
-            { src: musics[playing].image, sizes: '256x256', type: 'image/png' },
-            { src: musics[playing].image, sizes: '384x384', type: 'image/png' },
-            { src: musics[playing].image, sizes: '512x512', type: 'image/png' },
-          ]
-        });
-        navigator.mediaSession.setActionHandler(
-          'nexttrack',
-          musicNext
-        );
-        navigator.mediaSession.setActionHandler(
-          'previoustrack',
-          musicPrev
-        );
-        navigator.mediaSession.setActionHandler("seekto", (e) => {
-          progress.current.value = e.seekTime*10
-          audioContainer.current.currentTime = e.seekTime
-        });
+        console.log(navigator.mediaSession)
+        if ('mediaSession' in navigator) {        
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: playing,
+            album: "NY Music",
+            artwork: [
+              { src: musics[playing].image, sizes: '96x96', type: 'image/png' },
+              { src: musics[playing].image, sizes: '128x128', type: 'image/png' },
+              { src: musics[playing].image, sizes: '192x192', type: 'image/png' },
+              { src: musics[playing].image, sizes: '256x256', type: 'image/png' },
+              { src: musics[playing].image, sizes: '384x384', type: 'image/png' },
+              { src: musics[playing].image, sizes: '512x512', type: 'image/png' },
+            ]
+          });
+          navigator.mediaSession.setActionHandler(
+            'nexttrack',
+            musicNext
+          );
+          navigator.mediaSession.setActionHandler(
+            'previoustrack',
+            musicPrev
+          );
+          navigator.mediaSession.setActionHandler("seekto", (e) => {
+            progress.current.value = e.seekTime*10
+            audioContainer.current.currentTime = e.seekTime
+          });
+        }
       
-
       
         audioSource.current.src = musics[playing].cover
         audioContainer.current.load()
