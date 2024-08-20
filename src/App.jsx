@@ -152,6 +152,14 @@ function App() {
             'previoustrack',
             musicPrev
           );
+          navigator.mediaSession.setActionHandler(
+            "pause",
+            () => setStatus("pause")
+          )
+          navigator.mediaSession.setActionHandler(
+            "play",
+            () => setStatus("play")
+          )
           navigator.mediaSession.setActionHandler("seekto", (e) => {
             progress.current.value = e.seekTime*10
             audioContainer.current.currentTime = e.seekTime
