@@ -6,9 +6,12 @@
 
 
 ## 파일이 손상되었기 때문에 열 수 없습니다.
-아래 두 명령어를 써주시면 됩니다. <br/>
+아래 두 명령어중 하나를 써주시면 됩니다. <br/>
 ```
 xattr -cr 설치한dmg파일경로
+```
+```
+xattr -cr /Applications/ny-music.app/
 ```
 
 ## special thx
