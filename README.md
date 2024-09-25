@@ -17,4 +17,5 @@ xattr -cr /Applications/ny-music.app/
 ## special thx
 - [@ny64](https://github.com/ny0510)
 - [@imnyang](https://github.com/imnyang)
+- [@Project_IO](https://github.com/devproje)
 - [@GonGe1018](https://github.com/GonGe1018)
