@@ -1,5 +1,5 @@
 name: NY Music Build
-run-name: ${{ github.actor }} is build packages 🚀
+run-name: ${{ github.actor }} is building packages 🚀
 on: [push]
 
 jobs:
@@ -12,12 +12,16 @@ jobs:
         include:
           - platform: 'macos-latest'
             args: '--target aarch64-apple-darwin'
+            artifact-path: './src-tauri/target/aarch64-apple-darwin/release/bundle'
           - platform: 'macos-latest'
             args: '--target x86_64-apple-darwin'
+            artifact-path: './src-tauri/target/x86_64-apple-darwin/release/bundle'
           - platform: 'ubuntu-22.04'
             args: '--target x86_64-unknown-linux-gnu --bundles deb rpm'
+            artifact-path: './src-tauri/target/x86_64-unknown-linux-gnu/release/bundle'
           - platform: 'windows-latest'
             args: '--target x86_64-pc-windows-gnu'
+            artifact-path: './src-tauri/target/x86_64-pc-windows-gnu/release/bundle'
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -43,14 +47,11 @@ jobs:
       - name: install frontend dependencies
         run: yarn install
 
-      # TODO: If you want to use auto publish, please use this code.
-      # - uses: tauri-apps/tauri-action@v0
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tagName: app-v__VERSION__
-      #     releaseName: 'App v__VERSION__'
-      #     releaseBody: 'See the assets to download this version and install.'
-      #     releaseDraft: true
-      #     prerelease: false
-      #     args: ${{ matrix.args }}
+      - name: build Tauri app
+        run: yarn tauri build ${{ matrix.args }}
+
+      - name: upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Tauri-Build-${{ matrix.platform }}
+          path: ${{ matrix.artifact-path }}
